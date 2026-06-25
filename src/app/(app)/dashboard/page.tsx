@@ -7,12 +7,14 @@ import { createClient } from '@/lib/supabase/client'
 import { StoryCard } from '@/components/story/StoryCard'
 import { ChildProfileCard } from '@/components/child/ChildProfileCard'
 
+import type { Child } from '@/types'
+
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<{
     user: { email?: string } | null
     profile: { display_name?: string; full_name?: string } | null
-    children: { id: string; name: string; age: number; gender: string }[]
+    children: Child[]
     stories: { id: string; title: string; cover_url?: string; story_assets?: { url: string; type: string }[] }[]
     subscription: { plan: string; status: string } | null
   }>({ user: null, profile: null, children: [], stories: [], subscription: null })
