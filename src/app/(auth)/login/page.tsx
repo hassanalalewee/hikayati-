@@ -30,9 +30,20 @@ export default function LoginPage() {
       return
     }
 
-    // Small delay to ensure cookie is written before redirect
-    await new Promise(r => setTimeout(r, 200))
-    window.location.replace('/dashboard')
+    // Verify session is actually set before redirecting
+    let attempts = 0
+    while (attempts < 10) {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        window.location.replace('/dashboard')
+        return
+      }
+      await new Promise(r => setTimeout(r, 300))
+      attempts++
+    }
+
+    setError('حدث خطأ في الجلسة، حاول مرة أخرى')
+    setLoading(false)
   }
 
   function handleGoogleLogin() {
