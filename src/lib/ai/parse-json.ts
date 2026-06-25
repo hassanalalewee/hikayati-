@@ -10,7 +10,7 @@ export function extractJson<T>(text: string, arrayMode = false): T {
   const end = text.lastIndexOf(closer)
   if (start === -1 || end === -1) throw new Error(`No JSON ${opener}...${closer} found in response`)
 
-  let raw = text.slice(start, end + 1)
+  const raw = text.slice(start, end + 1)
 
   // Fix control characters ONLY inside JSON string values
   // Walk the string tracking whether we're inside a quoted value
