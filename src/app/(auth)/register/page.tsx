@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BookOpen, Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
@@ -17,28 +18,24 @@ export default function RegisterPage() {
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const fullName = formData.get('fullName') as string
 
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: formData.get('email'),
-          password: formData.get('password'),
-          fullName: formData.get('fullName'),
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || 'خطأ في التسجيل')
-        setLoading(false)
-        return
-      }
-      window.location.href = '/dashboard'
-    } catch {
-      setError('حدث خطأ، حاول مرة أخرى')
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    })
+
+    if (error) {
+      setError(error.message === 'User already registered' ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'حدث خطأ في التسجيل')
       setLoading(false)
+      return
     }
+
+    window.location.href = '/dashboard'
   }
 
   return (

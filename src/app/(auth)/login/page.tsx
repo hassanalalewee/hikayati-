@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BookOpen, Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
@@ -17,27 +18,19 @@ export default function LoginPage() {
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
 
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: formData.get('email'),
-          password: formData.get('password'),
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || 'خطأ في تسجيل الدخول')
-        setLoading(false)
-        return
-      }
-      window.location.href = '/dashboard'
-    } catch {
-      setError('حدث خطأ، حاول مرة أخرى')
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
       setLoading(false)
+      return
     }
+
+    window.location.href = '/dashboard'
   }
 
   function handleGoogleLogin() {
