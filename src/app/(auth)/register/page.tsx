@@ -35,7 +35,7 @@ export default function RegisterPage() {
       return
     }
 
-    window.location.href = '/dashboard'
+    window.location.replace('/dashboard')
   }
 
   return (

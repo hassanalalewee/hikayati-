@@ -12,8 +12,12 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/settings') ||
     pathname.startsWith('/reports')
 
-  // Check for Supabase auth cookie (sb-*-auth-token)
-  const hasSession = request.cookies.getAll().some(c => c.name.includes('-auth-token'))
+  // Supabase SSR browser client stores session in cookies named:
+  // sb-<project-ref>-auth-token  OR  sb-<project-ref>-auth-token.0 (chunked)
+  const allCookies = request.cookies.getAll()
+  const hasSession = allCookies.some(
+    c => c.name.startsWith('sb-') && c.name.includes('-auth-token')
+  )
 
   if (!hasSession && isProtectedRoute) {
     const url = request.nextUrl.clone()

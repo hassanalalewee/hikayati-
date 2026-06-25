@@ -30,7 +30,9 @@ export default function LoginPage() {
       return
     }
 
-    window.location.href = '/dashboard'
+    // Small delay to ensure cookie is written before redirect
+    await new Promise(r => setTimeout(r, 200))
+    window.location.replace('/dashboard')
   }
 
   function handleGoogleLogin() {
