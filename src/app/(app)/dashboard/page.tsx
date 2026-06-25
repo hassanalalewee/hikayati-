@@ -15,7 +15,7 @@ export default function DashboardPage() {
     user: { email?: string } | null
     profile: { display_name?: string; full_name?: string } | null
     children: Child[]
-    stories: { id: string; title: string; cover_url?: string; story_assets?: { url: string; type: string }[] }[]
+    stories: { id: string; title: string; cover_url: string | null; child_id: string; created_at: string; goals: string[]; story_assets?: { url: string; type: string; page_num: number | null }[] }[]
     subscription: { plan: string; status: string } | null
   }>({ user: null, profile: null, children: [], stories: [], subscription: null })
 
