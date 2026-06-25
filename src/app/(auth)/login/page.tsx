@@ -22,28 +22,21 @@ export default function LoginPage() {
     const password = formData.get('password') as string
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
+      setError(`خطأ: ${error.message}`)
       setLoading(false)
       return
     }
 
-    // Verify session is actually set before redirecting
-    let attempts = 0
-    while (attempts < 10) {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        window.location.replace('/dashboard')
-        return
-      }
-      await new Promise(r => setTimeout(r, 300))
-      attempts++
+    if (!data.session) {
+      setError('لم يتم إنشاء الجلسة — تأكد من تفعيل البريد الإلكتروني')
+      setLoading(false)
+      return
     }
 
-    setError('حدث خطأ في الجلسة، حاول مرة أخرى')
-    setLoading(false)
+    window.location.replace('/dashboard')
   }
 
   function handleGoogleLogin() {
