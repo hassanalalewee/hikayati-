@@ -1,4 +1,5 @@
-import { anthropic, AI_MODELS } from '@/lib/ai/models'
+import { groq, AI_MODELS } from '@/lib/ai/models'
+import { extractJson } from '@/lib/ai/parse-json'
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
@@ -11,8 +12,8 @@ export async function POST(req: Request) {
   if (!challengeText?.trim()) return NextResponse.json({ error: 'Challenge text required' }, { status: 400 })
 
   try {
-    const message = await anthropic.messages.create({
-      model: AI_MODELS.CLAUDE_SONNET,
+    const response = await groq.chat.completions.create({
+      model: AI_MODELS.GROQ_LARGE,
       max_tokens: 1024,
       messages: [{
         role: 'user',
@@ -32,19 +33,13 @@ export async function POST(req: Request) {
 
 الأهداف المتاحة: الصدق، المسؤولية، الشجاعة، الامتنان، الانضباط، الصداقة، اللطف، ضد التنمر، القيادة، الاحترام، الثقة بالنفس، الذكاء العاطفي، الصمود، الإبداع، حل المشكلات، القيم الإسلامية
 الأساليب المتاحة: مغامرة، خيال، إسلامية، حيوانات، فضاء، بطل خارق، غموض، تاريخية، علمية، يومية
-`
+`,
       }],
     })
 
-    const content = message.content[0]
-    if (content.type !== 'text') throw new Error('Unexpected response')
+    const text = response.choices[0].message.content || ''
+    const analysis = extractJson(text)
 
-    const jsonMatch = content.text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) throw new Error('No JSON in response')
-
-    const analysis = JSON.parse(jsonMatch[0])
-
-    // Save session
     await supabase.from('advisor_sessions').insert({
       user_id: user.id,
       child_id: childId || null,
