@@ -1,4 +1,4 @@
-import { groq, AI_MODELS } from '../models'
+import { groqWithRetry, AI_MODELS } from '../models'
 import type { PipelineContext } from '../pipeline/types'
 
 const DIALECT_INSTRUCTIONS: Record<string, string> = {
@@ -53,7 +53,7 @@ ${blueprint.acts.map(act => `المرحلة ${act.actNumber} — ${act.actName}:
 طول القصة: ${wordCountTarget} كلمة تقريباً
 ابدأ مباشرة بالقصة دون مقدمات.`
 
-  const response = await groq.chat.completions.create({
+  const response = await groqWithRetry({
     model: AI_MODELS.GROQ_LARGE,
     max_tokens: 4096,
     messages: [

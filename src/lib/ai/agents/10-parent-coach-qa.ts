@@ -1,4 +1,4 @@
-import { groq, AI_MODELS } from '../models'
+import { groqWithRetry, AI_MODELS } from '../models'
 import { extractJson } from '../parse-json'
 import type { PipelineContext, ParentGuideContent, QAReport } from '../pipeline/types'
 
@@ -6,7 +6,7 @@ export async function runParentCoachAgent(ctx: PipelineContext): Promise<ParentG
   const { child, goals } = ctx.input
   const start = Date.now()
 
-  const response = await groq.chat.completions.create({
+  const response = await groqWithRetry({
     model: AI_MODELS.GROQ_LARGE,
     max_tokens: 2048,
     messages: [{
@@ -49,7 +49,7 @@ export async function runQAAgent(ctx: PipelineContext): Promise<QAReport> {
   const { child, goals } = ctx.input
   const start = Date.now()
 
-  const response = await groq.chat.completions.create({
+  const response = await groqWithRetry({
     model: AI_MODELS.GROQ_LARGE,
     max_tokens: 2048,
     messages: [{

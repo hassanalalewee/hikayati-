@@ -1,7 +1,6 @@
-import { groq, AI_MODELS } from '../models'
+import { groqWithRetry, AI_MODELS, openai } from '../models'
 import { extractJson } from '../parse-json'
 import type { PipelineContext, IllustrationPage } from '../pipeline/types'
-import { openai } from '../models'
 
 export async function runIllustrationAgent(ctx: PipelineContext): Promise<IllustrationPage[]> {
   const { child } = ctx.input
@@ -30,7 +29,7 @@ ${blueprint.acts.map(act => `المشهد ${act.actNumber}: ${act.illustrationCu
   }
 ]`
 
-  const response = await groq.chat.completions.create({
+  const response = await groqWithRetry({
     model: AI_MODELS.GROQ_LARGE,
     max_tokens: 2048,
     messages: [{ role: 'user', content: prompt }],

@@ -1,4 +1,4 @@
-import { groq, AI_MODELS } from '@/lib/ai/models'
+import { groqWithRetry, AI_MODELS } from '@/lib/ai/models'
 import { extractJson } from '@/lib/ai/parse-json'
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   if (!challengeText?.trim()) return NextResponse.json({ error: 'Challenge text required' }, { status: 400 })
 
   try {
-    const response = await groq.chat.completions.create({
+    const response = await groqWithRetry({
       model: AI_MODELS.GROQ_LARGE,
       max_tokens: 1024,
       messages: [{
