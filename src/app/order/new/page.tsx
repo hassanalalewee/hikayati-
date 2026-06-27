@@ -49,14 +49,33 @@ export default function NewOrderPage() {
   const [step, setStep]           = useState(1)
   const [children, setChildren]   = useState<Child[]>([])
   const [loading, setLoading]     = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError]         = useState('')
+  const [consentGiven, setConsentGiven]   = useState(false)
+  const [checkingConsent, setCheckingConsent] = useState(true)
+
+  useEffect(() => {
+    // Check if user already gave consent
+    fetch('/api/v1/consent', { method: 'GET' })
+      .then(r => r.json())
+      .then(d => { setConsentGiven(d.data?.ai_consent === true); setCheckingConsent(false) })
+      .catch(() => setCheckingConsent(false))
+  }, [])
+
+  async function handleConsent() {
+    const res = await fetch('/api/v1/consent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ai_consent: true }),
+    })
+    if (res.ok) setConsentGiven(true)
+  }
 
   const [selectedChild,   setSelectedChild]   = useState('')
   const [selectedGoal,    setSelectedGoal]    = useState('')
   const [selectedDialect, setSelectedDialect] = useState('gulf')
   const [selectedAge,     setSelectedAge]     = useState('5-7')
   const [specialNotes,    setSpecialNotes]    = useState('')
+  const [submitting,      setSubmitting]      = useState(false)
+  const [error,           setError]           = useState('')
 
   useEffect(() => {
     setLoading(true)
