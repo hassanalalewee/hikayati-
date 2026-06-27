@@ -86,7 +86,8 @@ export default function EditorWorkspacePage() {
   const [revisionBrief, setRevisionBrief] = useState('')
 
   const [submitting, setSubmitting] = useState<'approve' | 'revise' | null>(null)
-  const [saved, setSaved] = useState(false)
+  const [saved, setSaved]           = useState(false)
+  const [viewMode, setViewMode]     = useState<'edit' | 'preview'>('edit')
 
   // Refs so auto-save always reads current values without recreating the interval
   const editedContentRef = useRef(editedContent)
@@ -172,11 +173,90 @@ export default function EditorWorkspacePage() {
 
   const child = order.children
 
+  // ── PREVIEW MODE — clean customer view ──────────────────────────────────
+  if (viewMode === 'preview') {
+    const previewContent = editedContent || draft.content || ''
+    const paragraphs = previewContent.split('\n').filter((p: string) => p.trim())
+    return (
+      <div className="max-w-2xl mx-auto py-6 space-y-4">
+        {/* Bar */}
+        <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <span className="text-sm font-medium text-amber-800">
+            👁 معاينة كما سيراها العميل — هذا ليس للنشر بعد
+          </span>
+          <button
+            onClick={() => setViewMode('edit')}
+            className="text-sm bg-ink-950 text-white px-4 py-1.5 rounded-lg hover:bg-ink-800 transition-colors"
+          >
+            ← رجوع للتحرير
+          </button>
+        </div>
+
+        {/* Story cover */}
+        <div className="bg-ink-950 rounded-2xl p-8 text-center">
+          <div className="text-5xl mb-4">📖</div>
+          <h1 className="text-2xl font-bold text-white mb-2">
+            {draft.title || `قصة ${child?.name}`}
+          </h1>
+          <p className="text-[#9B9590] text-sm">
+            قصة خاصة لـ {child?.name} • {GOAL_LABELS[order.story_goal] || order.story_goal}
+          </p>
+          <div className="mt-4 inline-flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2 text-xs text-white/70">
+            ✓ راجعها فريقنا التحريري
+          </div>
+        </div>
+
+        {/* Story text */}
+        <div className="bg-white rounded-2xl border border-paper-300 p-6 shadow-card space-y-4">
+          {paragraphs.length > 0 ? paragraphs.map((para: string, i: number) => (
+            <p key={i} className="text-[18px] leading-loose text-[#2E2A24] text-right" dir="rtl" style={{ fontFamily: 'var(--font-noto-arabic), sans-serif' }}>
+              {para}
+            </p>
+          )) : (
+            <p className="text-ink-400 text-center">لا يوجد محتوى بعد</p>
+          )}
+          {paragraphs.length > 0 && (
+            <div className="pt-4 border-t border-paper-300 text-center">
+              <p className="text-ink-400 text-sm">✨ نهاية قصة {child?.name} ✨</p>
+            </div>
+          )}
+        </div>
+
+        {/* Actions from preview */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => setViewMode('edit')}
+            className="flex-1 border border-paper-300 text-ink-600 py-3 rounded-xl font-medium hover:bg-paper-100 transition-colors text-sm"
+          >
+            ← رجوع للتحرير والمراجعة
+          </button>
+          {allChecked && (
+            <button
+              onClick={handleApprove}
+              disabled={submitting !== null}
+              className="flex-1 bg-teal-600 text-white py-3 rounded-xl font-bold hover:bg-teal-500 transition-colors text-sm"
+            >
+              ✓ موافقة وإرسال للعميل
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-cols-[280px_1fr_320px] gap-6 h-[calc(100vh-120px)]">
 
       {/* ── LEFT PANEL: Context ── */}
       <aside className="overflow-y-auto space-y-4">
+
+        {/* Preview button */}
+        <button
+          onClick={() => setViewMode('preview')}
+          className="w-full flex items-center justify-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium py-3 rounded-xl hover:bg-amber-100 transition-colors"
+        >
+          👁 معاينة كما سيراها العميل
+        </button>
 
         {/* Child profile */}
         <div className="bg-white rounded-xl border border-[#E8E4DC] p-4">
