@@ -3,23 +3,17 @@ import {
 } from '@react-pdf/renderer'
 import type { ReactElement } from 'react'
 import React from 'react'
+import path from 'path'
 
-// Register Arabic font from Google Fonts CDN
+// Use locally bundled font — avoids external HTTP requests at generation time
+const FONT_PATH = path.join(process.cwd(), 'public', 'fonts', 'Cairo-Regular.ttf')
+
 Font.register({
   family: 'Cairo',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/cairo/v28/SLXgc1nY6HkvalIhTp2mxdt0UX8.woff2',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/cairo/v28/SLXgc1nY6HkvalIhTp2mxdt0UX8.woff2',
-      fontWeight: 700,
-    },
-  ],
+  src: FONT_PATH,
 })
 
-Font.registerHyphenationCallback(word => [word]) // disable hyphenation for Arabic
+Font.registerHyphenationCallback(word => [word])
 
 // ── Color palette ──────────────────────────────────────
 const COLORS = {
