@@ -71,14 +71,14 @@ export async function POST(req: Request) {
     .single()
   if (!child) return err('Child not found', 'child_not_found', 404)
 
-  // Check subscription allows more orders
-  const { data: sub } = await supabase
+  // Check subscription allows more orders — use admin client to bypass RLS
+  const admin = await createAdminClient()
+  const { data: sub } = await admin
     .from('subscriptions')
     .select('plan, status, stories_remaining')
     .eq('user_id', user.id)
     .single()
 
-  // No active subscription = treat as free (1 story/month limit)
   const plan   = sub?.plan   || 'free'
   const status = sub?.status || 'active'
 
@@ -86,12 +86,12 @@ export async function POST(req: Request) {
     return err('Your subscription is not active', 'subscription_inactive', 402)
   }
 
+  // Only enforce monthly limit on free plan
   if (plan === 'free') {
     const startOfMonth = new Date()
     startOfMonth.setDate(1)
     startOfMonth.setHours(0, 0, 0, 0)
-    // Count pending + delivered orders this month (not just complete ones)
-    const { count } = await supabase
+    const { count } = await admin
       .from('orders')
       .select('*', { count: 'exact', head: true })
       .eq('parent_id', user.id)
@@ -103,7 +103,6 @@ export async function POST(req: Request) {
   }
 
   // Idempotency — return existing order if key already used
-  const admin = await createAdminClient()
   const { data: existing } = await admin
     .from('orders')
     .select('id, status')
