@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   const { data: sub } = await supabase.from('subscriptions').select('plan').eq('user_id', user.id).single()
   const { count } = await supabase.from('children').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('is_active', true)
 
-  const limits = { free: 1, premium: 1, family: 5, professional: 50 }
+  const limits = { free: 3, premium: 3, family: 5, professional: 50 }
   const plan = (sub?.plan || 'free') as keyof typeof limits
   if ((count ?? 0) >= limits[plan]) {
     return NextResponse.json({ error: 'child_limit_reached', plan }, { status: 402 })
