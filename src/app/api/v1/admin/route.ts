@@ -17,20 +17,32 @@ export async function GET() {
 
   const admin = await createAdminClient()
 
-  // Fetch all orders with child + parent info
-  const { data: orders } = await admin
+  // Fetch all orders
+  const { data: orders, error: ordersError } = await admin
     .from('orders')
     .select(`
       id, status, story_goal, dialect, age_group,
-      created_at, delivered_at,
-      children ( name, age ),
-      user_profiles!orders_parent_id_fkey ( email, full_name )
+      created_at, delivered_at, parent_id,
+      children ( name, age )
     `)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .limit(100)
 
-  const all = orders || []
+  if (ordersError) console.error('[admin GET] orders error:', ordersError.message)
+
+  // Fetch parent profiles separately to avoid FK join issues
+  const parentIds = [...new Set((orders || []).map(o => o.parent_id))]
+  const { data: profiles } = parentIds.length > 0
+    ? await admin.from('user_profiles').select('id, email, full_name').in('id', parentIds)
+    : { data: [] }
+
+  const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]))
+
+  const all = (orders || []).map(o => ({
+    ...o,
+    user_profiles: profileMap[o.parent_id] || null,
+  }))
 
   // Simple metrics
   const today = new Date()
