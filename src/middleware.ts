@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Gate /editor/* — requires editor or admin role
-  if (pathname.startsWith('/editor')) {
+  if (pathname.startsWith('/editor') || pathname.startsWith('/admin')) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -21,10 +21,7 @@ export async function middleware(request: NextRequest) {
     )
 
     const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+    if (!user) return NextResponse.redirect(new URL('/login', request.url))
 
     const { data: profile } = await supabase
       .from('user_profiles')
@@ -32,7 +29,13 @@ export async function middleware(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    if (!profile || !['editor', 'admin'].includes(profile.role)) {
+    // /admin requires admin role only
+    if (pathname.startsWith('/admin') && profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
+    // /editor requires editor or admin
+    if (pathname.startsWith('/editor') && !['editor', 'admin'].includes(profile?.role ?? '')) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
