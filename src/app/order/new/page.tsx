@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Loader2, BookOpen } from 'lucide-react'
 
@@ -45,8 +45,14 @@ const AGE_GROUPS = [
 ]
 
 export default function NewOrderPage() {
-  const router  = useRouter()
-  const [step, setStep]           = useState(1)
+  return <Suspense><NewOrderForm /></Suspense>
+}
+
+function NewOrderForm() {
+  const router       = useRouter()
+  const searchParams = useSearchParams()
+  const preselectedChild = searchParams.get('childId') || ''
+  const [step, setStep] = useState(preselectedChild ? 2 : 1)
   const [children, setChildren]   = useState<Child[]>([])
   const [loading, setLoading]     = useState(false)
   const [consentGiven, setConsentGiven]   = useState(false)
@@ -69,7 +75,7 @@ export default function NewOrderPage() {
     if (res.ok) setConsentGiven(true)
   }
 
-  const [selectedChild,   setSelectedChild]   = useState('')
+  const [selectedChild,   setSelectedChild]   = useState(preselectedChild)
   const [selectedGoal,    setSelectedGoal]    = useState('')
   const [selectedDialect, setSelectedDialect] = useState('gulf')
   const [selectedAge,     setSelectedAge]     = useState('5-7')
