@@ -94,15 +94,15 @@ export default function AdminDashboard() {
     setRevisionBrief('')
     setDraftLoading(true)
 
-    // Assign to current user and set under_review if needed
+    // Assign + set under_review if needed
     if (order.status === 'draft_ready') {
       await fetch('/api/v1/editor/orders/' + order.id + '/claim', { method: 'POST' })
     }
 
-    // Load draft
-    const res  = await fetch('/api/v1/editor/orders/' + order.id + '/draft')
+    // Fetch draft directly from admin endpoint (bypasses status restriction)
+    const res  = await fetch('/api/v1/admin/draft/' + order.id)
     const json = await res.json()
-    setDraft(json.data?.draft || null)
+    setDraft(json.data || null)
     setDraftLoading(false)
   }
 
