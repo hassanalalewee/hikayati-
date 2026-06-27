@@ -145,7 +145,6 @@ export default function EditorQueuePage() {
     ready: [], mine: [], revision: [],
   })
   const [loading, setLoading] = useState(true)
-  const [claiming, setClaiming] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     const res = await fetch('/api/v1/editor/queue')
@@ -170,7 +169,6 @@ export default function EditorQueuePage() {
   }, [load])
 
   async function handleClaim(orderId: string) {
-    setClaiming(orderId)
     const res = await fetch(`/api/v1/editor/orders/${orderId}/claim`, { method: 'POST' })
     if (res.ok) {
       await load()
@@ -179,7 +177,6 @@ export default function EditorQueuePage() {
       const err = await res.json()
       alert(err.error?.message || 'فشل استلام الطلب')
     }
-    setClaiming(null)
   }
 
   const tabs = [

@@ -189,7 +189,7 @@ export default function OrderStatusPage() {
             {order.special_notes && (
               <div className="pt-2 border-t border-[#E8E4DC]">
                 <div className="text-[#6B6560] mb-1">ملاحظاتك</div>
-                <div className="text-[#4B4640] bg-[#FAFAF8] rounded-lg p-2">"{order.special_notes}"</div>
+                <div className="text-[#4B4640] bg-[#FAFAF8] rounded-lg p-2">&quot;{order.special_notes}&quot;</div>
               </div>
             )}
           </div>

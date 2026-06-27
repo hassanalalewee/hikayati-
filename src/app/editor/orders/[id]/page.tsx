@@ -198,7 +198,7 @@ export default function EditorWorkspacePage() {
             <>
               <div className="text-xs font-medium text-[#6B6560] mb-1">ملاحظات الوالدين</div>
               <div className="text-sm text-[#4B4640] bg-[#FAFAF8] rounded-lg p-2 text-right leading-relaxed">
-                "{order.special_notes}"
+                &quot;{order.special_notes}&quot;
               </div>
             </>
           )}
