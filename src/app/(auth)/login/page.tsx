@@ -92,7 +92,12 @@ export default function LoginPage() {
               <Input id="email" name="email" type="email" placeholder="example@email.com" dir="ltr" className="mt-1" required />
             </div>
             <div>
-              <Label htmlFor="password" className="text-ink-600 font-medium">كلمة المرور</Label>
+              <div className="flex items-center justify-between mb-1">
+                <Label htmlFor="password" className="text-ink-600 font-medium">كلمة المرور</Label>
+                <Link href="/reset-password" className="text-xs text-teal-600 hover:underline">
+                  نسيت كلمة المرور؟
+                </Link>
+              </div>
               <Input id="password" name="password" type="password" placeholder="••••••••" dir="ltr" className="mt-1" required />
             </div>
 
