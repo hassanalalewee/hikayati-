@@ -61,11 +61,13 @@ export default function AdminDashboard() {
   const [updating, setUpdating]   = useState<string | null>(null)
 
   // Review panel state
-  const [reviewOrder, setReviewOrder]   = useState<Order | null>(null)
-  const [draft, setDraft]               = useState<Draft | null>(null)
-  const [draftLoading, setDraftLoading] = useState(false)
+  const [reviewOrder, setReviewOrder]     = useState<Order | null>(null)
+  const [draft, setDraft]                 = useState<Draft | null>(null)
+  const [draftLoading, setDraftLoading]   = useState(false)
   const [revisionBrief, setRevisionBrief] = useState('')
-  const [actionLoading, setActionLoading] = useState<'approve'|'revise'|null>(null)
+  const [actionLoading, setActionLoading] = useState<'approve'|'revise'|'save'|'regen'|null>(null)
+  const [editMode, setEditMode]           = useState(false)
+  const [editedText, setEditedText]       = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -92,18 +94,48 @@ export default function AdminDashboard() {
     setReviewOrder(order)
     setDraft(null)
     setRevisionBrief('')
+    setEditMode(false)
+    setEditedText('')
     setDraftLoading(true)
 
-    // Assign + set under_review if needed
     if (order.status === 'draft_ready') {
       await fetch('/api/v1/editor/orders/' + order.id + '/claim', { method: 'POST' })
     }
 
-    // Fetch draft directly from admin endpoint (bypasses status restriction)
     const res  = await fetch('/api/v1/admin/draft/' + order.id)
     const json = await res.json()
-    setDraft(json.data || null)
+    const d = json.data || null
+    setDraft(d)
+    setEditedText(d?.edited_content || d?.content || '')
     setDraftLoading(false)
+  }
+
+  async function handleSaveEdits() {
+    if (!reviewOrder || !draft) return
+    setActionLoading('save')
+    await fetch('/api/v1/editor/orders/' + reviewOrder.id + '/draft', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ edited_content: editedText }),
+    })
+    setDraft(prev => prev ? { ...prev, edited_content: editedText } : prev)
+    setEditMode(false)
+    setActionLoading(null)
+  }
+
+  async function handleRegenerate() {
+    if (!reviewOrder) return
+    if (!confirm('هل تريد توليد قصة جديدة بالكامل؟ سيتم حذف المسودة الحالية.')) return
+    setActionLoading('regen')
+    await fetch('/api/v1/editor/orders/' + reviewOrder.id + '/revise', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ revision_brief: revisionBrief || 'أعد توليد القصة مع تصحيح الاسم والتفاصيل' }),
+    })
+    setReviewOrder(null)
+    setDraft(null)
+    await load()
+    setActionLoading(null)
   }
 
   async function handleApprove() {
@@ -342,25 +374,57 @@ export default function AdminDashboard() {
                     </p>
                   </div>
 
-                  {/* Story text — exactly as customer will see */}
-                  <div className="bg-white rounded-2xl border border-paper-300 p-5 space-y-4">
-                    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-paper-300">
-                      <Eye className="w-4 h-4 text-ink-400" />
-                      <span className="text-xs text-ink-400 font-medium">هذا ما سيراه العميل بالضبط</span>
-                    </div>
-                    {paragraphs.length > 0 ? paragraphs.map((para, i) => (
-                      <p key={i} className="text-[17px] leading-loose text-[#2E2A24] text-right"
-                        dir="rtl" style={{ fontFamily: 'var(--font-noto-arabic), sans-serif' }}>
-                        {para}
-                      </p>
-                    )) : (
-                      <p className="text-ink-400 text-center py-8">لا يوجد محتوى</p>
-                    )}
-                    {paragraphs.length > 0 && (
-                      <div className="pt-4 border-t border-paper-300 text-center">
-                        <p className="text-ink-400 text-sm">✨ نهاية القصة ✨</p>
+                  {/* Story text — edit or preview */}
+                  <div className="bg-white rounded-2xl border border-paper-300 overflow-hidden">
+                    {/* Toggle bar */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-paper-300 bg-paper-50">
+                      <div className="flex gap-2">
+                        <button onClick={() => setEditMode(false)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${!editMode ? 'bg-ink-950 text-white' : 'text-ink-400 hover:text-ink-950'}`}>
+                          👁 معاينة
+                        </button>
+                        <button onClick={() => setEditMode(true)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${editMode ? 'bg-ink-950 text-white' : 'text-ink-400 hover:text-ink-950'}`}>
+                          ✏️ تعديل
+                        </button>
                       </div>
-                    )}
+                      <span className="text-xs text-ink-200">{draft.word_count} كلمة</span>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-5">
+                      {editMode ? (
+                        <div className="space-y-3">
+                          <textarea
+                            value={editedText}
+                            onChange={e => setEditedText(e.target.value)}
+                            rows={20}
+                            className="w-full border border-paper-300 rounded-xl px-4 py-3 text-[16px] leading-loose text-ink-950 text-right resize-none focus:outline-none focus:ring-2 focus:ring-teal-600"
+                            dir="rtl"
+                            style={{ fontFamily: 'var(--font-noto-arabic), sans-serif' }}
+                          />
+                          <button onClick={handleSaveEdits} disabled={actionLoading === 'save'}
+                            className="w-full bg-teal-600 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-teal-500 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+                            {actionLoading === 'save' ? <Loader2 className="w-4 h-4 animate-spin" /> : '💾'}
+                            حفظ التعديلات
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {(editedText || '').split('\n').filter(p => p.trim()).map((para, i) => (
+                            <p key={i} className="text-[17px] leading-loose text-[#2E2A24] text-right"
+                              dir="rtl" style={{ fontFamily: 'var(--font-noto-arabic), sans-serif' }}>
+                              {para}
+                            </p>
+                          ))}
+                          {(editedText || '').trim() && (
+                            <div className="pt-4 border-t border-paper-300 text-center">
+                              <p className="text-ink-400 text-sm">✨ نهاية القصة ✨</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Revision brief */}
@@ -385,19 +449,41 @@ export default function AdminDashboard() {
 
             {/* Panel footer — action buttons */}
             {canReview && !draftLoading && draft && (
-              <div className="sticky bottom-0 bg-white border-t border-paper-300 p-4 flex gap-3">
-                <button onClick={handleRevise}
-                  disabled={revisionBrief.length < 10 || actionLoading !== null}
-                  className="flex-1 flex items-center justify-center gap-2 border-2 border-amber-500 text-amber-700 py-3 rounded-xl font-medium text-sm hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-                  {actionLoading === 'revise' ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />}
-                  طلب تعديل
-                </button>
-                <button onClick={handleApprove}
-                  disabled={actionLoading !== null}
-                  className="flex-1 flex items-center justify-center gap-2 bg-teal-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-teal-500 disabled:opacity-40 transition-colors">
-                  {actionLoading === 'approve' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-                  موافقة وإرسال للعميل
-                </button>
+              <div className="sticky bottom-0 bg-white border-t border-paper-300 p-4 space-y-3">
+                {/* Regenerate brief */}
+                <div>
+                  <label className="block text-xs font-medium text-ink-400 mb-1.5">
+                    ملاحظات للتعديل أو إعادة التوليد
+                  </label>
+                  <textarea
+                    value={revisionBrief}
+                    onChange={e => setRevisionBrief(e.target.value)}
+                    rows={2}
+                    placeholder="مثال: الاسم في القصة خطأ، أو اللغة رسمية جداً..."
+                    className="w-full border border-paper-300 rounded-xl px-3 py-2 text-sm text-ink-950 resize-none focus:outline-none focus:ring-1 focus:ring-teal-600"
+                    dir="rtl"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={handleRegenerate}
+                    disabled={actionLoading !== null}
+                    className="flex items-center justify-center gap-1.5 border-2 border-orange-400 text-orange-700 px-3 py-2.5 rounded-xl font-medium text-xs hover:bg-orange-50 disabled:opacity-40 transition-colors">
+                    {actionLoading === 'regen' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                    إعادة التوليد
+                  </button>
+                  <button onClick={handleRevise}
+                    disabled={revisionBrief.length < 5 || actionLoading !== null}
+                    className="flex items-center justify-center gap-1.5 border-2 border-amber-400 text-amber-700 px-3 py-2.5 rounded-xl font-medium text-xs hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    {actionLoading === 'revise' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                    طلب تعديل
+                  </button>
+                  <button onClick={handleApprove}
+                    disabled={actionLoading !== null}
+                    className="flex-1 flex items-center justify-center gap-2 bg-teal-600 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-teal-500 disabled:opacity-40 transition-colors">
+                    {actionLoading === 'approve' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                    موافقة وإرسال للعميل
+                  </button>
+                </div>
               </div>
             )}
 
