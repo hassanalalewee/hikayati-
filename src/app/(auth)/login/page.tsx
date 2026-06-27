@@ -9,7 +9,7 @@ import { BookOpen, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError]     = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -18,14 +18,14 @@ export default function LoginPage() {
     setError(null)
 
     const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
+    const email    = formData.get('email')    as string
     const password = formData.get('password') as string
 
     const supabase = createClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError(`خطأ: ${error.message}`)
+      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
       setLoading(false)
       return
     }
@@ -44,23 +44,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-amber-50 flex items-center justify-center p-4" dir="rtl">
+    <div className="min-h-screen bg-paper-50 flex items-center justify-center p-4" dir="rtl">
       <div className="w-full max-w-md">
+
+        {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
-            <BookOpen className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-ink-950 rounded-2xl mb-4">
+            <BookOpen className="w-8 h-8 text-[#C9A84C]" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">حكايتي</h1>
-          <p className="text-slate-600 mt-1">قصص عربية شخصية لطفلك</p>
+          <h1 className="text-3xl font-bold">
+            <span className="text-[#C9A84C]">ح</span>
+            <span className="text-ink-950">كايتي</span>
+          </h1>
+          <p className="text-ink-400 mt-1">قصص عربية مخصصة لطفلك</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">تسجيل الدخول</h2>
+        <div className="bg-white rounded-2xl shadow-card p-8 border border-paper-300">
+          <h2 className="text-xl font-bold text-ink-950 mb-6">تسجيل الدخول</h2>
 
+          {/* Google login */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors mb-4 font-medium"
+            className="w-full flex items-center justify-center gap-3 border border-paper-300 rounded-xl px-4 py-3 text-ink-600 hover:bg-paper-100 transition-colors mb-4 font-medium"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -73,37 +79,39 @@ export default function LoginPage() {
 
           <div className="relative mb-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
+              <div className="w-full border-t border-paper-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-slate-500">أو</span>
+              <span className="bg-white px-2 text-ink-200">أو</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email">البريد الإلكتروني</Label>
+              <Label htmlFor="email" className="text-ink-600 font-medium">البريد الإلكتروني</Label>
               <Input id="email" name="email" type="email" placeholder="example@email.com" dir="ltr" className="mt-1" required />
             </div>
             <div>
-              <Label htmlFor="password">كلمة المرور</Label>
+              <Label htmlFor="password" className="text-ink-600 font-medium">كلمة المرور</Label>
               <Input id="password" name="password" type="password" placeholder="••••••••" dir="ltr" className="mt-1" required />
             </div>
 
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">{error}</div>
+              <div className="bg-error-50 text-error-600 text-sm rounded-xl px-4 py-3 border border-red-100">
+                {error}
+              </div>
             )}
 
-            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="w-4 h-4 animate-spin ml-2" />}
               تسجيل الدخول
             </Button>
           </form>
 
-          <p className="text-center text-sm text-slate-600 mt-4">
+          <p className="text-center text-sm text-ink-400 mt-4">
             ليس لديك حساب؟{' '}
-            <Link href="/register" className="text-indigo-600 font-medium hover:underline">
-              سجّل الآن مجاناً
+            <Link href="/register" className="text-teal-600 font-medium hover:underline">
+              سجّل الآن
             </Link>
           </p>
         </div>
