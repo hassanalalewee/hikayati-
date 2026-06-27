@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Sparkles } from 'lucide-react'
+import { PenLine } from 'lucide-react'
 import type { Child } from '@/types'
 
 interface Props {
@@ -12,25 +12,41 @@ interface Props {
 export function ChildProfileCard({ child }: Props) {
   return (
     <div className="group">
-      <Link href={`/children/${child.id}`} className="block bg-white rounded-2xl border border-slate-200 p-4 hover:border-indigo-300 hover:shadow-sm transition-all">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mb-3 mx-auto overflow-hidden">
+      <Link
+        href={`/children/${child.id}`}
+        className="block bg-white rounded-2xl border border-paper-300 p-5 hover:border-teal-600 hover:shadow-card transition-all duration-200"
+      >
+        {/* Avatar */}
+        <div className="w-14 h-14 rounded-2xl bg-paper-200 flex items-center justify-center mb-3 mx-auto overflow-hidden">
           {child.photo_url ? (
-            <Image src={child.photo_url} alt={child.name} width={56} height={56} className="w-full h-full object-cover" />
+            <Image
+              src={child.photo_url}
+              alt={child.name}
+              width={56}
+              height={56}
+              className="w-full h-full object-cover"
+            />
           ) : (
-            <span className="text-2xl">{child.gender === 'male' ? '👦' : '👧'}</span>
+            <span className="text-2xl select-none">
+              {child.gender === 'male' ? '👦' : '👧'}
+            </span>
           )}
         </div>
+
+        {/* Name + age */}
         <div className="text-center">
-          <p className="font-bold text-slate-900 text-sm">{child.name}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{child.age} سنوات</p>
+          <p className="font-bold text-ink-950 text-sm">{child.name}</p>
+          <p className="text-xs text-ink-200 mt-0.5">{child.age} سنوات</p>
         </div>
       </Link>
+
+      {/* New story CTA */}
       <div className="mt-2 flex justify-center">
         <Link
           href={`/stories/create?childId=${child.id}`}
-          className="inline-flex items-center gap-1 text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded-lg hover:bg-indigo-100"
+          className="inline-flex items-center gap-1.5 text-xs text-teal-600 font-semibold bg-teal-50 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors"
         >
-          <Sparkles className="w-3 h-3" />
+          <PenLine className="w-3 h-3" />
           قصة جديدة
         </Link>
       </div>

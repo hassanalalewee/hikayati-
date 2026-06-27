@@ -4,53 +4,96 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 243 75% 59%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 43 96% 56%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 243 75% 59%;
-    --radius: 0.75rem;
+    /* ── Surfaces ─────────────────────────────────── */
+    --background:           45 20% 98%;    /* paper-50  #FAFAF8 */
+    --card:                 0   0% 100%;   /* white     #FFFFFF */
+    --card-foreground:      30 10%  9%;    /* ink-950   #1A1814 */
+    --popover:              0   0% 100%;
+    --popover-foreground:   30 10%  9%;
+
+    /* ── Brand / Ink ──────────────────────────────── */
+    --foreground:           30 10%  9%;    /* ink-950   #1A1814 */
+    --primary:              30 10%  9%;    /* ink-950   — main CTA */
+    --primary-foreground:   45 20% 98%;    /* paper-50 */
+
+    /* ── Secondary / Muted ────────────────────────── */
+    --secondary:            38 20% 95%;    /* paper-100 #F5F2ED */
+    --secondary-foreground: 30 10%  9%;
+    --muted:                38 20% 95%;
+    --muted-foreground:     25  6% 40%;    /* ink-400   #6B6560 */
+
+    /* ── Trust — Teal ─────────────────────────────── */
+    --accent:               174 82% 27%;   /* teal-600  #0D7C6F */
+    --accent-foreground:    0   0% 100%;
+
+    /* ── Borders & Inputs ─────────────────────────── */
+    --border:               37 18% 87%;    /* paper-300 #E8E4DC */
+    --input:                37 18% 87%;
+    --ring:                 174 82% 27%;   /* teal-600  — focus ring */
+
+    /* ── Semantic ─────────────────────────────────── */
+    --destructive:          0  73% 51%;    /* error-600 #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* ── Radius ───────────────────────────────────── */
+    --radius: 1rem;                        /* 16px — standard card */
   }
 }
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
 
-  /* Arabic typography */
-  body, input, textarea, button, select {
-    font-family: var(--font-cairo), var(--font-noto-arabic), sans-serif;
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-cairo), var(--font-noto-arabic), system-ui, sans-serif;
   }
 
-  /* Better Arabic line height */
-  p, li, span { line-height: 1.9; }
-  h1, h2, h3, h4, h5, h6 { line-height: 1.4; font-weight: 700; }
+  input, textarea, button, select {
+    font-family: var(--font-cairo), var(--font-noto-arabic), system-ui, sans-serif;
+  }
+
+  /* Arabic line heights — critical for readability */
+  p, li, span { line-height: 1.85; }
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.35;
+    font-weight: 700;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0D7C6F;
+    outline-offset: 2px;
+  }
 }
 
 @layer utilities {
-  /* RTL-aware utilities */
-  .flip-rtl { transform: scaleX(-1); }
+  /* Story reading — Noto for long-form Arabic */
   .story-body {
-    @apply text-lg leading-[2.2] text-slate-800 font-medium;
     font-family: var(--font-noto-arabic), sans-serif;
+    @apply text-lg leading-[2.1] text-[#2E2A24];
   }
+
+  /* Warm shimmer skeleton */
   .shimmer-bg {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, #EDE8E0 25%, #E8E4DC 50%, #EDE8E0 75%);
     background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
+    animation: shimmer 1.8s linear infinite;
   }
+
+  /* RTL flip for directional icons */
+  .flip-rtl { transform: scaleX(-1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
 }

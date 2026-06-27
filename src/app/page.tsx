@@ -1,125 +1,233 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import { BookOpen, Sparkles, Star, Shield, Globe } from 'lucide-react'
+import { BookOpen, Star, Shield, Globe, PenLine } from 'lucide-react'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white" dir="rtl">
+    <div className="min-h-screen bg-[#FAFAF8]" dir="rtl">
+
       {/* Nav */}
-      <nav className="border-b border-slate-100 sticky top-0 bg-white/80 backdrop-blur z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="border-b border-[#E8E4DC] sticky top-0 bg-[#FAFAF8]/90 backdrop-blur z-10">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-indigo-600" />
-            <span className="font-bold text-xl text-slate-900">حكايتي</span>
+            <BookOpen className="w-5 h-5 text-[#C9A84C]" />
+            <span className="font-bold text-xl">
+              <span className="text-[#C9A84C]">ح</span><span className="text-[#1A1814]">كايتي</span>
+            </span>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-slate-600 text-sm font-medium hover:text-slate-900">
+            <Link href="/login" className="text-[#6B6560] text-sm font-medium hover:text-[#1A1814] transition-colors">
               تسجيل الدخول
             </Link>
-            <Link href="/register" className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700">
-              ابدأ مجاناً
+            <Link href="/register" className="bg-[#C9A84C] text-[#1A1814] px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#D9BC76] transition-colors">
+              اطلب قصة طفلك
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-          <Sparkles className="w-4 h-4" />
-          مدعوم بأحدث تقنيات الذكاء الاصطناعي
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight mb-6">
-          اجعل طفلك<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-l from-indigo-600 to-purple-600">
-            بطل قصته
-          </span>
+      <section className="max-w-4xl mx-auto px-6 py-24 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6">
+          <span className="text-[#1A1814]">قصة طفلك،</span><br />
+          <span className="text-[#C9A84C]">كُتبت له وحده</span>
         </h1>
-        <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-          قصص عربية شخصية تُحقق أهدافك التربوية — يُنشئها الذكاء الاصطناعي في 90 ثانية بجودة كتب الأطفال الاحترافية
+        <p className="text-xl text-[#4B4640] mb-4 max-w-2xl mx-auto leading-relaxed">
+          نكتب لطفلك قصةً مخصوصةً به — مراجعةً ومعتمدةً من فريق تحريري متخصص في أدب الأطفال.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/register" className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors">
-            ابدأ أول قصة مجاناً ✨
-          </Link>
-          <Link href="#how-it-works" className="border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-medium text-lg hover:bg-slate-50">
-            كيف يعمل؟
-          </Link>
+        <p className="text-base text-[#6B6560] mb-10 max-w-xl mx-auto leading-relaxed">
+          أخبرنا عن طفلك، وفريقنا يتولى الباقي.
+        </p>
+        <Link
+          href="/register"
+          className="inline-block bg-[#C9A84C] text-[#1A1814] px-10 py-4 rounded-xl font-bold text-lg hover:bg-[#D9BC76] transition-colors"
+        >
+          اطلب قصة طفلك الآن
+        </Link>
+        <p className="text-sm text-[#9B9590] mt-4">جاهزة خلال 24 ساعة • مراجعة بشرية مضمونة</p>
+      </section>
+
+      {/* Trust banner */}
+      <section className="bg-[#F5F0E8] border-y border-[#C9A84C]/30 py-5">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#4B4640]">
+            <div className="flex items-center gap-2">
+              <span className="text-[#C9A84C]">✓</span>
+              <span>مراجعة بشرية لكل قصة</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-[#C9A84C]/30" />
+            <div className="flex items-center gap-2">
+              <span className="text-[#C9A84C]">✓</span>
+              <span>عربي أصيل بلهجتك</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-[#C9A84C]/30" />
+            <div className="flex items-center gap-2">
+              <span className="text-[#C9A84C]">✓</span>
+              <span>آمن للأطفال ومعتمد تربوياً</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-[#C9A84C]/30" />
+            <div className="flex items-center gap-2">
+              <span className="text-[#C9A84C]">✓</span>
+              <span>إذا لم تُعجبك نعيد الكتابة مجاناً</span>
+            </div>
+          </div>
         </div>
-        <p className="text-sm text-slate-400 mt-4">بدون بطاقة ائتمانية • قصة مجانية كاملة</p>
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="bg-slate-50 py-16">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">كيف يعمل حكايتي؟</h2>
-          <div className="grid sm:grid-cols-4 gap-6">
+      <section className="max-w-4xl mx-auto px-6 py-20">
+        <h2 className="text-3xl font-bold text-center text-[#1A1814] mb-4">كيف يعمل حكايتي؟</h2>
+        <p className="text-center text-[#6B6560] mb-14">ثلاث خطوات بسيطة — وفريقنا يتولى الباقي</p>
+        <div className="grid sm:grid-cols-3 gap-8">
+          {[
+            {
+              number: '١',
+              title: 'أخبرنا عن طفلك',
+              desc: 'الاسم، العمر، الشخصية، والدرس الذي تريده أن يتعلمه اليوم.',
+              icon: '👦',
+            },
+            {
+              number: '٢',
+              title: 'فريقنا يكتب القصة',
+              desc: 'فريقنا التحريري يراجع كل كلمة — اللغة، السلامة العاطفية، والقيمة التربوية.',
+              icon: '✍️',
+            },
+            {
+              number: '٣',
+              title: 'استلم قصة طفلك',
+              desc: 'قصة مُصوّرة مخصصة، قابلة للتحميل والطباعة، ستبقى في ذاكرة طفلك.',
+              icon: '📖',
+            },
+          ].map(item => (
+            <div key={item.number} className="text-center">
+              <div className="w-16 h-16 bg-white border border-[#E8E4DC] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 shadow-sm">
+                {item.icon}
+              </div>
+              <div className="text-xs text-[#9B9590] font-medium mb-2">الخطوة {item.number}</div>
+              <h3 className="font-bold text-[#1A1814] text-lg mb-2">{item.title}</h3>
+              <p className="text-sm text-[#6B6560] leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Editorial trust section */}
+      <section className="bg-white border-y border-[#E8E4DC] py-16">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <div className="w-14 h-14 bg-[#FAFAF8] border border-[#E8E4DC] rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <PenLine className="w-6 h-6 text-[#1A1814]" />
+          </div>
+          <h2 className="text-2xl font-bold text-[#1A1814] mb-4">
+            كل قصة تمرّ بمراجعة بشرية متخصصة
+          </h2>
+          <p className="text-[#4B4640] leading-relaxed mb-6">
+            فريقنا التحريري من خبراء اللغة العربية وأدب الأطفال.
+            قبل أن تصل القصة إليك، يقرأها محرر متخصص ويتحقق من جودة اللغة،
+            والسلامة العاطفية، والقيم التربوية — كل مرة، بلا استثناء.
+          </p>
+          <div className="inline-flex items-center gap-2 bg-[#F5F0E8] border border-[#C9A84C]/40 rounded-xl px-5 py-3 text-sm text-[#4B4640]">
+            <span className="text-[#C9A84C]">✓</span>
+            راجعها فريقنا التحريري — كل كلمة، كل مرة
+          </div>
+        </div>
+      </section>
+
+      {/* Why Hikayati */}
+      <section className="max-w-4xl mx-auto px-6 py-20">
+        <h2 className="text-3xl font-bold text-center text-[#1A1814] mb-14">لماذا حكايتي؟</h2>
+        <div className="grid sm:grid-cols-3 gap-6">
+          {[
+            {
+              icon: <Star className="w-5 h-5 text-[#C9A84C]" />,
+              title: 'مخصصة لطفلك وحده',
+              desc: 'قصة كُتبت حول اسم طفلك، شخصيته، والدرس الذي يحتاجه الآن — ليست قالباً جاهزاً.',
+            },
+            {
+              icon: <Shield className="w-5 h-5 text-[#C9A84C]" />,
+              title: 'آمنة ومعتمدة تربوياً',
+              desc: 'كل قصة مراجعة للتأكد من السلامة العاطفية والملاءمة التربوية لعمر طفلك.',
+            },
+            {
+              icon: <Globe className="w-5 h-5 text-[#C9A84C]" />,
+              title: 'عربي أصيل بلهجتك',
+              desc: 'فصحى، خليجية، شامية، أو مصرية — محتوى أصيل كُتب بالعربية، لا مترجم.',
+            },
+          ].map(item => (
+            <div key={item.title} className="bg-white border border-[#E8E4DC] rounded-2xl p-6">
+              <div className="w-10 h-10 bg-[#F5F0E8] rounded-xl flex items-center justify-center mb-4">
+                {item.icon}
+              </div>
+              <h3 className="font-bold text-[#1A1814] mb-2">{item.title}</h3>
+              <p className="text-sm text-[#6B6560] leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-[#F5F0E8] py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-2xl font-bold text-center text-[#1A1814] mb-10">آراء الآباء والأمهات</h2>
+          <div className="grid sm:grid-cols-2 gap-6">
             {[
-              { step: '1', title: 'اختر الهدف', desc: 'الصدق، الشجاعة، الثقة — 16 هدفاً تربوياً', icon: '🎯' },
-              { step: '2', title: 'أخبرنا عن طفلك', desc: 'الاسم والعمر والهوايات لقصة مخصصة 100%', icon: '👦' },
-              { step: '3', title: 'الذكاء الاصطناعي يبدع', desc: '12 وكيل ذكاء اصطناعي يعملون معاً', icon: '✨' },
-              { step: '4', title: 'استمتع بالنتيجة', desc: 'قصة + رسوم + صوت + دليل الوالدين', icon: '📖' },
-            ].map(item => (
-              <div key={item.step} className="text-center">
-                <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-2xl mx-auto mb-4">
-                  {item.icon}
+              {
+                text: '"بكت ابنتي حين رأت اسمها في القصة. لم أتوقع هذا الأثر."',
+                name: 'مريم، الرياض',
+                stars: 5,
+              },
+              {
+                text: '"أخيراً قصة عربية تشعر أن أحداً يعرف طفلي فعلاً."',
+                name: 'طارق، لندن',
+                stars: 5,
+              },
+            ].map(t => (
+              <div key={t.name} className="bg-white rounded-2xl p-6 border border-[#E8E4DC]">
+                <div className="flex gap-1 mb-3">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <span key={i} className="text-[#C9A84C] text-sm">★</span>
+                  ))}
                 </div>
-                <div className="text-xs text-indigo-600 font-bold mb-1">الخطوة {item.step}</div>
-                <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
-                <p className="text-sm text-slate-500">{item.desc}</p>
+                <p className="text-[#1A1814] leading-relaxed mb-4">{t.text}</p>
+                <p className="text-sm text-[#9B9590]">— {t.name}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Why Hikayati */}
-      <section className="max-w-4xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">لماذا حكايتي؟</h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { icon: <Star className="w-6 h-6 text-amber-500" />, title: 'جودة أدبية حقيقية', desc: '12 وكيل ذكاء اصطناعي متخصص ينتجون قصصاً بجودة كتب الأطفال الاحترافية' },
-            { icon: <Shield className="w-6 h-6 text-green-500" />, title: 'آمن ومُثري تربوياً', desc: 'قصص تُعلّم بالتجربة لا بالوعظ، آمنة عاطفياً، ومبنية على علم نفس الطفولة' },
-            { icon: <Globe className="w-6 h-6 text-indigo-500" />, title: 'عربي 100%', desc: 'فصحى وخليجية وشامية ومصرية — محتوى أصيل لا مترجم' },
-          ].map(item => (
-            <div key={item.title} className="bg-slate-50 rounded-2xl p-6">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
-                {item.icon}
-              </div>
-              <h3 className="font-bold text-slate-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* CTA */}
-      <section className="bg-gradient-to-l from-indigo-600 to-purple-700 py-16 text-white text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-4">ابدأ رحلة طفلك اليوم</h2>
-          <p className="text-indigo-100 mb-8">قصة مجانية كاملة — بدون بطاقة ائتمانية</p>
-          <Link href="/register" className="inline-block bg-white text-indigo-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-indigo-50 transition-colors">
-            إنشاء حساب مجاني ✨
+      <section className="py-20 text-center">
+        <div className="max-w-xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-[#1A1814] mb-4">أهدِ طفلك قصته اليوم</h2>
+          <p className="text-[#6B6560] mb-8">قصة مخصصة، مراجعة من فريقنا، جاهزة خلال 24 ساعة.</p>
+          <Link
+            href="/register"
+            className="inline-block bg-[#C9A84C] text-[#1A1814] px-10 py-4 rounded-xl font-bold text-lg hover:bg-[#D9BC76] transition-colors"
+          >
+            اطلب قصة طفلك الآن
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-100 py-8">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+      <footer className="border-t border-[#E8E4DC] py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#9B9590]">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-indigo-600" />
-            <span className="font-bold text-slate-700">حكايتي</span>
+            <BookOpen className="w-4 h-4 text-[#C9A84C]" />
+            <span className="font-bold">
+              <span className="text-[#C9A84C]">ح</span><span className="text-[#1A1814]">كايتي</span>
+            </span>
           </div>
           <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-slate-600">الخصوصية</Link>
-            <Link href="/terms" className="hover:text-slate-600">الشروط</Link>
-            <Link href="mailto:hello@hikayati.ai" className="hover:text-slate-600">تواصل معنا</Link>
+            <Link href="/privacy" className="hover:text-[#1A1814] transition-colors">الخصوصية</Link>
+            <Link href="/terms" className="hover:text-[#1A1814] transition-colors">الشروط</Link>
+            <Link href="mailto:hello@hikayati.com" className="hover:text-[#1A1814] transition-colors">تواصل معنا</Link>
           </div>
           <p>© 2026 حكايتي. جميع الحقوق محفوظة.</p>
         </div>
       </footer>
+
     </div>
   )
 }

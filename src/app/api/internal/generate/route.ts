@@ -3,9 +3,11 @@ import { NextResponse } from 'next/server'
 import { runStoryPipeline } from '@/lib/ai/pipeline/orchestrator'
 
 export async function POST(req: Request) {
-  // Internal-only endpoint
+  // Internal-only endpoint — no fallback key; missing env var = always rejected
+  const requiredKey = process.env.INTERNAL_API_KEY
   const internalKey = req.headers.get('x-internal-key')
-  if (internalKey !== (process.env.INTERNAL_API_KEY || 'dev-secret-key-change-in-prod')) {
+    || req.headers.get('authorization')?.replace('Bearer ', '')
+  if (!requiredKey || internalKey !== requiredKey) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

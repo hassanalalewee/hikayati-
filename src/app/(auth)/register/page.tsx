@@ -9,37 +9,54 @@ import { BookOpen, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError]     = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  // Consent must be explicitly checked — default false
+  const [aiConsent, setAiConsent] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
+    if (!aiConsent) {
+      setError('يجب الموافقة على معالجة البيانات للمتابعة')
+      setLoading(false)
+      return
+    }
+
     const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
+    const email    = formData.get('email')    as string
     const password = formData.get('password') as string
     const fullName = formData.get('fullName') as string
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     })
 
-    if (error) {
-      setError(error.message === 'User already registered' ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'حدث خطأ في التسجيل')
+    if (signUpError) {
+      setError(signUpError.message === 'User already registered'
+        ? 'هذا البريد الإلكتروني مسجل بالفعل'
+        : 'حدث خطأ في التسجيل')
       setLoading(false)
       return
     }
+
+    // Record AI consent immediately after account creation
+    await fetch('/api/v1/consent', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ ai_consent: true }),
+    })
 
     window.location.replace('/dashboard')
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-amber-50 flex items-center justify-center p-4" dir="rtl">
+    <div className="min-h-screen bg-paper-50 flex items-center justify-center p-4" dir="rtl">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
@@ -67,11 +84,30 @@ export default function RegisterPage() {
               <Input id="password" name="password" type="password" placeholder="••••••••" dir="ltr" className="mt-1" minLength={6} required />
             </div>
 
+            {/* AI Consent — required before account creation (GDPR) */}
+            <div className="flex items-start gap-3 bg-slate-50 rounded-xl p-4">
+              <input
+                id="aiConsent"
+                type="checkbox"
+                checked={aiConsent}
+                onChange={e => setAiConsent(e.target.checked)}
+                className="mt-0.5 accent-indigo-600 w-4 h-4 shrink-0"
+              />
+              <label htmlFor="aiConsent" className="text-sm text-slate-600 leading-relaxed cursor-pointer">
+                أوافق على معالجة بيانات طفلي بواسطة فريقنا لإنشاء القصص الشخصية.{' '}
+                <Link href="/privacy" className="text-indigo-600 hover:underline">سياسة الخصوصية</Link>
+              </label>
+            </div>
+
             {error && (
               <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">{error}</div>
             )}
 
-            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              disabled={loading || !aiConsent}
+            >
               {loading && <Loader2 className="w-4 h-4 animate-spin ml-2" />}
               إنشاء الحساب مجاناً
             </Button>

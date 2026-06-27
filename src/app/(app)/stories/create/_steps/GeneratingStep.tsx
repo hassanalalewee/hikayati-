@@ -80,7 +80,6 @@ export function GeneratingStep() {
       })
 
       const genText = await genRes.text()
-      console.log('GENERATE RESPONSE:', genRes.status, genText)
       let genData: { error?: string; data?: { jobId: string; storyId: string } } = {}
       try { genData = JSON.parse(genText) } catch { throw new Error(`Server error: ${genRes.status} - ${genText.slice(0, 300)}`) }
 
