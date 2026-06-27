@@ -158,9 +158,14 @@ export default function OrderStatusPage() {
               📖 اقرأ القصة الآن
             </Link>
             <div className="grid grid-cols-2 gap-3">
-              <button className="py-3 border border-[#E8E4DC] rounded-xl text-sm text-[#1A1814] hover:bg-white transition-colors">
+              <a
+                href={`/api/v1/story/${orderId}/pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 border border-[#E8E4DC] rounded-xl text-sm text-[#1A1814] hover:bg-white transition-colors text-center block"
+              >
                 ↓ تنزيل PDF
-              </button>
+              </a>
               <button className="py-3 border border-[#E8E4DC] rounded-xl text-sm text-[#1A1814] hover:bg-white transition-colors">
                 ↗ مشاركة مع العائلة
               </button>

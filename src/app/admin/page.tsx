@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { BookOpen, Loader2, RefreshCw, Eye, X, CheckCircle, RotateCcw } from 'lucide-react'
+import { BookOpen, Loader2, RefreshCw, Eye, X, CheckCircle, RotateCcw, Download } from 'lucide-react'
 
 interface Order {
   id: string
@@ -322,9 +322,22 @@ export default function AdminDashboard() {
                   {GOAL_LABELS[reviewOrder.story_goal]} • {reviewOrder.children?.age} سنوات
                 </p>
               </div>
-              <button onClick={() => setReviewOrder(null)} className="text-ink-400 hover:text-ink-950 transition-colors p-1">
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {draft && (
+                  <a
+                    href={`/api/v1/story/${reviewOrder.id}/pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 bg-paper-100 border border-paper-300 text-ink-600 text-xs px-3 py-2 rounded-lg hover:bg-paper-200 transition-colors font-medium"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    تنزيل PDF
+                  </a>
+                )}
+                <button onClick={() => setReviewOrder(null)} className="text-ink-400 hover:text-ink-950 transition-colors p-1">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Panel body */}

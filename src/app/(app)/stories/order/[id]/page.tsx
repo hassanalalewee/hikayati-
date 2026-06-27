@@ -136,7 +136,11 @@ export default function StoryReaderPage() {
         )}
 
         {/* Actions */}
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex gap-3 flex-wrap">
+          <a href={`/api/v1/story/${orderId}/pdf`} target="_blank" rel="noopener noreferrer"
+            className="flex-1 border-2 border-[#C9A84C] text-[#C9A84C] py-3 rounded-xl font-bold text-center hover:bg-gold-100 transition-colors text-sm">
+            ↓ تنزيل PDF
+          </a>
           <Link href="/order/new"
             className="flex-1 bg-[#C9A84C] text-ink-950 py-3 rounded-xl font-bold text-center hover:bg-[#D9BC76] transition-colors text-sm">
             اطلب قصة جديدة

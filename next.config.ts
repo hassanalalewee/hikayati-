@@ -6,15 +6,16 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
-      // DALL-E 3 uses multiple Azure blob storage hostnames
       { protocol: 'https', hostname: '*.blob.core.windows.net' },
     ],
   },
+  // Required for @react-pdf/renderer server-side rendering
+  serverExternalPackages: ['@react-pdf/renderer'],
 }
 
 export default withSentryConfig(nextConfig, {
   org:     'hikayati',
   project: 'hikayati',
-  silent:  true,          // suppress build output noise
+  silent:  true,
   disableLogger: true,
 })
